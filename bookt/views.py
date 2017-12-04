@@ -6,6 +6,10 @@ from django.contrib.auth.models import User
 from rest_framework import permissions
 from bookt.permissions import IsOwnerOrReadOnly
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+
 class BookList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer
@@ -44,3 +48,11 @@ class UserList(generics.ListAPIView):
 class UserDetail(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('user-list', request=request, format=format),
+        'books': reverse('book-list', request=request, format=format)
+    })
