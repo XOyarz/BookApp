@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class Book(models.Model):
     # owner is the user posting the book
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, related_name='books', on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=50)
     description = models.TextField(blank=True, null=True)
