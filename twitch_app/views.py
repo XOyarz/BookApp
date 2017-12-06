@@ -21,11 +21,36 @@ class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
-    def perform_create(self, serializer):
-        from twitch_app.helper import get_twitch_user_bio, get_twitch_user_name
 
-        bio = get_twitch_user_bio(serializer.validated_data['id'])
-        serializer.validated_data['bio'] = bio
-        name = get_twitch_user_name(serializer.validated_data['id'])
-        serializer.validated_data['name'] = name
+    def perform_create(self, serializer):
+        from twitch_app.helper import get_twitch_user
+
+
+        twitch_user = get_twitch_user(serializer.validated_data['id'])
+        #print(twitch_user)
+        if twitch_user['description'] != '':
+            serializer.validated_data['bio'] = twitch_user['description']
+        if twitch_user['game'] != '':
+            serializer.validated_data['game'] = twitch_user['game']
+        serializer.validated_data['followers'] = twitch_user['followers']
+        serializer.validated_data['name'] = twitch_user['name']
+        serializer.validated_data['views'] = twitch_user['views']
+        serializer.validated_data['profile_link'] = twitch_user['url']
+
+
         serializer.save()
+
+class UserDetail(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
+    queryset = TwitchUser.objects.all()
+    serializer_class = UserSerializer
+    #permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly, )
+
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
