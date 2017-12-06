@@ -25,7 +25,7 @@ SECRET_KEY = '$ptg&cqu_vn)86e&%sy!a@cke_ztv)ijfn0!z*5la3im)x#$gb'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['xoyarz.pythonanywhere.com',]
 
 REST_FRAMEWORK = {
     'PAGE_SIZE': 5,
