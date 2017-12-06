@@ -22,9 +22,10 @@ class UserList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
         return self.create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        from twitch_app.helper import get_twitch_user_bio
+        from twitch_app.helper import get_twitch_user_bio, get_twitch_user_name
 
-        print(serializer.validated_data['name'])
-        bio = get_twitch_user_bio(serializer.validated_data['name'])
+        bio = get_twitch_user_bio(serializer.validated_data['id'])
         serializer.validated_data['bio'] = bio
+        name = get_twitch_user_name(serializer.validated_data['id'])
+        serializer.validated_data['name'] = name
         serializer.save()
